@@ -1,0 +1,47 @@
+{% extends "shop/base.html" %}
+{% load static %}
+
+{% block title %}
+    Ваши заказы
+{% endblock %}
+
+{% block content %}
+    <h1>Ваши заказы</h1>
+    <table class="cart">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Товар</th>
+                <th>Количество</th>
+                <th></th>
+                <th>Стоимость</th>
+                <th>Общая Стоимость</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in client_order_list %}
+                {% with product=item.product %}
+                <tr>
+                    <td>
+                        <a href="{{ product.get_absolute_url }}">
+                            <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static "img/no_image.png" %}{% endif %}">
+                        </a>
+                    </td>
+                    <td>{{ product.name }}</td>
+                    <td>
+                        {% csrf_token %}
+                        {{ item.quantity }}
+                    </td>
+                    <td>
+                    </td>
+                    <td class="num">₽{{ item.price }}</td>
+                    <td class="num">₽{% widthratio item.price 1 item.quantity  %}</td>
+                </tr>
+                {% endwith %}
+            {% endfor %}
+        </tbody>
+    </table>
+    <p class="text-right">
+        <a href="{% url "shopapp:product_list" %}" class="button light" >На главную</a>
+    </p>
+{% endblock %}

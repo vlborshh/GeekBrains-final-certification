@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>{% block title %}Мой магазин{% endblock %}</title>
+<!--        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">-->
+<!--        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">-->
+        <link href="{% static "css/base.css" %}" rel="stylesheet">
+    </head>
+<body>
+    <div id="header">
+        <a href="/" class="logo">Мой магазин</a>
+        <div style="float: right;">
+            {% if request.user.is_authenticated %}
+                <p>
+                    Вы авторизованы {{ request.user.username }}
+<!--                    <a href="logout" >Выйти</a>-->
+                    <form action="{% url 'logout' %}" method="post">
+                         {% csrf_token %}
+                         <button type="submit" class="btn btn-success">выйти</button>
+                    </form>
+                </p>
+            {% else %}
+                <a href="/registration/registr" >Регистрация</a>
+                <a href="/accounts/login/" >Войти</a>
+                <!--            <a href="/" >Выйти</a>-->
+            {% endif %}
+        </div>
+    </div>
+    <div id="subheader">
+<!--        <div>-->
+<!--            <a href="/" >Заказы</a>-->
+<!--        </div>-->
+
+        <div class="cart">
+            <a href="/" >Заказы</a>
+            {% with total_items=cart|length %}
+                {% if total_items > 0 %}
+                    Корзина:
+                    <a href="{% url "cart:cart_detail" %}"> Товаров: {{ total_items }}, на {{ cart.get_total_price }} ₽</a>
+                {% else %}
+                    Корзина пуста
+                {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+    <div id="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>
